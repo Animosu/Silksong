@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silksong Release Probability</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        table { margin: 20px auto; border-collapse: collapse; width: 80%; }
+        th, td { border: 1px solid black; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Silksong Release Probability</h1>
+    <p>Today's Date: <span id="today-date"></span></p>
+    <p>Probability Today: <strong><span id="today-probability"></span>%</strong></p>
+    <h2>Upcoming Probabilities</h2>
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Probability (%)</th>
+        </tr>
+        <tbody id="probability-list"></tbody>
+    </table>
+    <script>
+        function calculateProbabilities(startDate, initialProbability) {
+            let probabilities = [];
+            let currentDate = new Date(startDate);
+            let endDate = new Date("2025-12-31");
+            let totalDays = Math.ceil((endDate - currentDate) / (1000 * 60 * 60 * 24)) + 1;
+            
+            for (let i = 0; i < totalDays; i++) {
+                let probability = initialProbability * (totalDays / (totalDays - i));
+                probabilities.push({
+                    date: new Date(currentDate).toISOString().split('T')[0],
+                    probability: (probability * 100).toFixed(4)
+                });
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            return probabilities;
+        }
+
+        function displayProbabilities() {
+            let today = new Date().toISOString().split('T')[0];
+            document.getElementById("today-date").textContent = today;
+            
+            let probabilities = calculateProbabilities("2025-04-03", 0.003676);
+            let todayProbability = probabilities.find(p => p.date === today);
+            
+            // Si la fecha actual es antes del 3 de abril, mostrar la del 3 de abril
+            if (!todayProbability && today < "2025-04-03") {
+                todayProbability = probabilities[0];
+            }
+            
+            document.getElementById("today-probability").textContent = todayProbability ? todayProbability.probability : "N/A";
+            
+            let listElement = document.getElementById("probability-list");
+            probabilities.forEach(p => {
+                let row = `<tr><td>${p.date}</td><td>${p.probability}</td></tr>`;
+                listElement.innerHTML += row;
+            });
+        }
+
+        displayProbabilities();
+    </script>
+</body>
+</html>
