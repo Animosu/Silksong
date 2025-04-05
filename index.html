@@ -24,6 +24,11 @@
         <tbody id="probability-list"></tbody>
     </table>
     <script>
+        function getLocalDateString(date = new Date()) {
+            date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+            return date.toISOString().split('T')[0];
+        }
+
         function calculateProbabilities(startDate, initialProbability) {
             let probabilities = [];
             let currentDate = new Date(startDate);
@@ -33,7 +38,7 @@
             for (let i = 0; i < totalDays; i++) {
                 let probability = initialProbability * (totalDays / (totalDays - i));
                 probabilities.push({
-                    date: new Date(currentDate).toISOString().split('T')[0],
+                    date: getLocalDateString(new Date(currentDate)),
                     probability: (probability * 100).toFixed(4)
                 });
                 currentDate.setDate(currentDate.getDate() + 1);
@@ -42,7 +47,7 @@
         }
 
         function displayProbabilities() {
-            let today = new Date().toISOString().split('T')[0];
+            let today = getLocalDateString();
             document.getElementById("today-date").textContent = today;
             
             let probabilities = calculateProbabilities("2025-04-03", 0.003676);
